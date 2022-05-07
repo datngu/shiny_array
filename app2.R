@@ -124,7 +124,7 @@ server <- function(input, output, session) {
         if(substring(pasted_string, nchar(pasted_string)) != "\n") pasted_string = paste0(pasted_string, "\n")
         df = fread(pasted_string, sep = ":")
       }else{
-        df = fread(input$file_in, sep = ":")
+        df = fread(input$file_in$datapath, sep = ":")
       }
       fwrite(df, file = "SNV_list.tsv", sep = "\t", col.names = F, row.names = F)
       cmd = "tabix db_array.txt.gz -R SNV_list.tsv > results.txt"
