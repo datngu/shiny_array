@@ -39,12 +39,14 @@ ui <- fluidPage(
         verbatimTextOutput('contents'),
         hr(),
         tags$label(h3('SNP array content plot')),
-        hr(),
         plotOutput("plot", width="100%", height = "600px"),
         hr(),
         tags$label(h3('SNP array content statistics')),
-        hr(),
         tableOutput('tabledata'),
+        hr(),
+        tags$label(h3('Download array tag SNP information')),
+        downloadButton("downloadData", "Download"),
+        hr(),
       ),
       
       hr(),
@@ -145,8 +147,13 @@ server <- function(input, output, session) {
     od = order(df$count, decreasing = T)
     df = df[od,]
     #fwrite(df, file = "result_statistics.tsv", sep = "\t", row.names = F)
-    res = list(df = df, n = n)
+    res = list(df = df, n = n, array_tag_snp = x)
     print(res)
+  })
+
+  Array_tag_snp <- reactive({  
+    x = datasetInput()$array_tag_snp
+    print(x)
   })
 
   tag_snp_plot <- reactive({
@@ -158,7 +165,7 @@ server <- function(input, output, session) {
 
   
 
-  # Prediction results table
+  # results table
   output$tabledata <- renderTable({
     if (input$submitbutton>0) { 
       isolate(datasetInput()$df) 
@@ -170,6 +177,13 @@ server <- function(input, output, session) {
       isolate(tag_snp_plot()) 
     } 
   })
+
+  output$downloadData <- downloadHandler(
+    filename = "array_tagSNP_infomation.txt",
+    content = function(file) {
+       write.table(Array_tag_snp(), file, sep = "\t", quote = FALSE ,row.names = FALSE)
+    }
+  )
   
 }
 
