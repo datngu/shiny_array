@@ -10,6 +10,6 @@ do
   done
   cat clean_data/chr*_${pop}.txt > all_${pop}.txt
   bgzip all_${pop}.txt
-  tabix -b 2 -e 2 all_${pop}.txt.txt.gz
+  tabix -b 2 -e 2 all_${pop}.txt.gz
 done
   

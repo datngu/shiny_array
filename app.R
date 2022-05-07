@@ -4,6 +4,7 @@ library(shiny)
 library(shinythemes)
 library(data.table)
 library(ggplot2)
+library(rmarkdown)
 
 
 ####################################
@@ -11,7 +12,7 @@ library(ggplot2)
 ####################################
 ui <- fluidPage(
   
-  theme = shinytheme("united"),
+  theme = shinytheme("cerulean"),
   
   navbarPage("Array evaluator",
     
@@ -22,7 +23,7 @@ ui <- fluidPage(
         textInput(inputId = "SNV_region", label = "Paste a region:", placeholder = "1:2000-400000"),
         HTML("<h4>OR</h4>"),
 
-        textAreaInput(inputId = "SNV_pasted", label = "Paste SNV IDs:", placeholder = "1:20000\n2:40000\n22:50000", height = "400px"),
+        textAreaInput(inputId = "SNV_pasted", label = "Paste SNV IDs:", placeholder = "1:20000\n2:40000\n22:50000", height = "400px", width = "100%"),
         HTML("<h4>OR</h4>"),
 
         fileInput("file_in", "Upload file", accept = ".txt"),
@@ -36,7 +37,7 @@ ui <- fluidPage(
         tags$label(h3('Server status')),
         verbatimTextOutput('contents'),
         tags$label(h3('SNP array content plot')),
-        plotOutput("plot"),
+        plotOutput("plot", width="100%", height = "600px"),
         tags$label(h3('SNP array content statistics')),
         tableOutput('tabledata')
       ) 
@@ -80,11 +81,13 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   
   # Status/Output Text Box
-  output$contents <- renderPrint({
+  output$contents <- renderText({
     if (input$submitbutton>0) { 
-      isolate("Calculation completed.") 
+      out_text = "Calculation completed."
+      isolate(out_text) 
     } else {
-      return("Server is ready for calculation.")
+      out_text = "Viewing defaut setting:"
+      isolate(out_text)
     }
   })
   
