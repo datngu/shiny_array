@@ -1,10 +1,46 @@
 
 
-library(shiny)
-library(shinythemes)
-library(data.table)
-library(ggplot2)
-library(rmarkdown)
+if(!require(shiny)){
+    install.packages("shiny")
+    library(shiny)
+}
+
+if(!require(shinythemes)){
+    install.packages("shinythemes")
+    library(shinythemes)
+}
+
+if(!require(data.table)){
+    install.packages("data.table")
+    library(data.table)
+}
+
+if(!require(ggplot2)){
+    install.packages("ggplot2")
+    library(ggplot2)
+}
+
+if(!require(rmarkdown)){
+    install.packages("rmarkdown")
+    library(rmarkdown)
+}
+
+
+####################################
+# Loading data default             #
+####################################
+
+default_snp = fread("default_db/default.txt", sep = ":", header = FALSE)
+
+plot_fun <- function(df, n){
+    ggplot(data = df, aes(x=array, y=percentage)) +
+    geom_bar(stat="identity", fill="steelblue")+
+    geom_text(aes(label= count), vjust=-0.3, size=3.5)+
+    theme_light() + guides(x = guide_axis(angle = 90)) + 
+    scale_y_continuous(breaks=seq(0,100,10), limits = c(0,100) ) + 
+    ylab("Percentage SNP in array / Total SNP query") +  xlab("") + 
+    ggtitle(paste0("Total SNP query: ", n))
+}
 
 
 ####################################
@@ -45,7 +81,9 @@ ui <- fluidPage(
         tableOutput('tabledata'),
         hr(),
         tags$label(h3('Download array tag SNP information')),
+        tags$label(h3('')),
         downloadButton("downloadData", "Download"),
+        tags$label(h3('')),
         hr(),
       ),
       
@@ -114,7 +152,7 @@ server <- function(input, output, session) {
 
       SNV_region_string = input$SNV_region
       if(substring(SNV_region_string, nchar(SNV_region_string)) == "\n") SNV_region_string = substring(SNV_region_string, 1, nchar(SNV_region_string)-1)
-      cmd = paste0("tabix db_array.txt.gz ",  SNV_region_string, " > results.txt")
+      cmd = paste0("tabix array_db/db_array.txt.gz ",  SNV_region_string, " > results.txt")
       system(cmd)
 
     }else{
@@ -127,7 +165,7 @@ server <- function(input, output, session) {
         df = fread(input$file_in$datapath, sep = ":")
       }
       fwrite(df, file = "SNV_list.tsv", sep = "\t", col.names = F, row.names = F)
-      cmd = "tabix db_array.txt.gz -R SNV_list.tsv > results.txt"
+      cmd = "tabix array_db/db_array.txt.gz -R SNV_list.tsv > results.txt"
       system(cmd)
       
     }
@@ -151,31 +189,78 @@ server <- function(input, output, session) {
     print(res)
   })
 
-  Array_tag_snp <- reactive({  
-    x = datasetInput()$array_tag_snp
-    print(x)
+
+
+  # Input Data default
+  datasetInput_default <- reactive({  
+    
+    df = default_snp
+
+    fwrite(df, file = "default_SNV_list.tsv", sep = "\t", col.names = F, row.names = F)
+    cmd = "tabix array_db/db_array.txt.gz -R default_SNV_list.tsv > default_results.txt"
+    system(cmd)
+
+    x = fread("default_results.txt")
+
+    array_info = fread("array_size.txt")
+    array_names = array_info$array
+    cols = c("chr", "pos", "id", array_names)
+    
+    colnames(x) = cols
+    n = 1
+    n = ifelse(nrow(x) > 1 , nrow(x), 1)
+    t = colSums(x[,..array_names])
+    df = data.frame( array = names(t), count = t, percentage = t*100/n)
+    df$count = as.integer(df$count)
+    od = order(df$count, decreasing = T)
+    df = df[od,]
+    #fwrite(df, file = "result_statistics.tsv", sep = "\t", row.names = F)
+    res = list(df = df, n = n, array_tag_snp = x)
+    print(res)
   })
 
   tag_snp_plot <- reactive({
-    ggplot(data= datasetInput()$df, aes(x=array, y=percentage)) +
-    geom_bar(stat="identity", fill="steelblue")+
-    geom_text(aes(label= count), vjust=-0.3, size=3.5)+
-    theme_light() + guides(x = guide_axis(angle = 90)) + scale_y_continuous(breaks=seq(0,100,10), limits = c(0,100) ) + ylab("Percentage SNP in array / Total SNP query") +  xlab("") + ggtitle(paste0("Total SNP query: ", datasetInput()$n))
+    plot_fun(datasetInput()$df, datasetInput()$n)
   })
 
-  
+
+  tag_snp_plot_default <- reactive({
+    plot_fun(datasetInput_default()$df, datasetInput_default()$n)
+  })
+
+
 
   # results table
   output$tabledata <- renderTable({
     if (input$submitbutton>0) { 
       isolate(datasetInput()$df) 
+    }else{
+      isolate(datasetInput_default()$df) 
     } 
   })
 
+  # results plot
   output$plot <- renderPlot({
     if (input$submitbutton>0) { 
       isolate(tag_snp_plot()) 
+    }else{
+      isolate(tag_snp_plot_default())
     } 
+  })
+
+
+  Array_tag_snp <- reactive({
+    x = datasetInput()$array_tag_snp
+    print(x)
+  })
+
+  Array_tag_snp <- reactive({
+    if (input$submitbutton>0) { 
+      x = datasetInput()$array_tag_snp
+    }else{
+      x = datasetInput_default()$array_tag_snp
+    } 
+    print(x)
   })
 
   output$downloadData <- downloadHandler(
@@ -184,7 +269,8 @@ server <- function(input, output, session) {
        write.table(Array_tag_snp(), file, sep = "\t", quote = FALSE ,row.names = FALSE)
     }
   )
-  
+
+
 }
 
 
