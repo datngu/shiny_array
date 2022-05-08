@@ -46,7 +46,7 @@ default_snp = fread("/srv/shiny-server/shiny_array/data/default.txt", sep = ":",
 # system("rm work/*")
 
 
-SNV_region_string_default = "20:50000-10000000"
+SNV_region_string_default = "20:500000-800000"
 
 
 plot_fun <- function(df, n){
@@ -82,7 +82,7 @@ ui <- fluidPage(
                tabPanel("Array Contents",
                         
                         sidebarPanel(
-                            textInput(inputId = "SNV_region", label = "Paste a region:", placeholder = "20:50000-10000000"),
+                            textInput(inputId = "SNV_region", label = "Paste a region:", placeholder = "20:500000-800000"),
                             HTML("<h4>OR</h4>"),
                             
                             textAreaInput(inputId = "SNV_pasted", label = "Paste SNV IDs:", placeholder = "1:20000\n2:40000\n22:50000", height = "400px", width = "100%"),
@@ -125,7 +125,7 @@ ui <- fluidPage(
                             selectInput("dataset", "Choose a dataset:",
                             choices = c("EAS", "AMR", "AFR", "EUR", "SAS", "VNP")),
 
-                            textInput(inputId = "SNV_region_imp", label = "Paste a region:", value = "20:50000-10000000"),
+                            textInput(inputId = "SNV_region_imp", label = "Paste a region:", value = "20:500000-800000"),
                             #HTML("<h4>OR</h4>"),
                             
                             #textAreaInput(inputId = "SNV_pasted_imp", label = "Paste SNV IDs:", placeholder = "1:20000\n2:40000\n22:50000", height = "400px", width = "100%"),
@@ -461,3 +461,18 @@ server <- function(input, output, session) {
 # Create Shiny App                 #
 ####################################
 shinyApp(ui = ui, server = server)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
