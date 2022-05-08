@@ -46,6 +46,7 @@ system("mkdir work")
 system("rm work/*")
 
 
+
 SNV_region_string_default = "20:500000-800000"
 
 
@@ -106,8 +107,7 @@ ui <- fluidPage(
                             tags$label(h3('SNP array content statistics')),
                             tableOutput('tabledata'),
                             hr(),
-                            tags$label(h3('Download array content information')),
-                            tags$label(h3('\n')),
+                            HTML("<h3>Download array content information</h3>"),
                             downloadButton("downloadData", "Download"),
                             tags$label(h3('\n')),
                             hr(),
@@ -116,7 +116,8 @@ ui <- fluidPage(
                         hr(),
                         tags$footer("Written by Dat Thanh Nguyen.", align = "center"),
                         tags$footer("Copyright (c) 2022", align = "center"),
-                        tags$footer(tags$a(href="https://github.com/datngu/shiny_array", "Fork on GitHub.", target = "_blank"), align = "center")
+                        tags$footer(tags$a(href="https://github.com/datngu/shiny_array", "Fork on GitHub.", target = "_blank"), align = "center"),
+                        hr()
                ),
                
                tabPanel("Imputation Performances",
@@ -149,8 +150,7 @@ ui <- fluidPage(
                             tags$label(h3('SNP array imputation accuracy statistics')),
                             tableOutput('tabledata_imp'),
                             hr(),
-                            tags$label(h3('Download array imputation accuracy information')),
-                            tags$label(h3('\n')),
+                            HTML("<h3>Download array impuation performance information</h3>"),
                             downloadButton("downloadData_imp", "Download"),
                             tags$label(h3('\n')),
                             hr(),
@@ -159,7 +159,8 @@ ui <- fluidPage(
                         hr(),
                         tags$footer("Written by Dat Thanh Nguyen.", align = "center"),
                         tags$footer("Copyright (c) 2022", align = "center"),
-                        tags$footer(tags$a(href="https://github.com/datngu/shiny_array", "Fork on GitHub.", target = "_blank"), align = "center")
+                        tags$footer(tags$a(href="https://github.com/datngu/shiny_array", "Fork on GitHub.", target = "_blank"), align = "center"),
+                        hr()
                ),
                
                tabPanel("About", 
@@ -169,7 +170,8 @@ ui <- fluidPage(
                         hr(),
                         tags$footer("Written by Dat Thanh Nguyen.", align = "center"),
                         tags$footer("Copyright (c) 2022", align = "center"),
-                        tags$footer(tags$a(href="https://github.com/datngu/shiny_array", "Fork on GitHub.", target = "_blank"), align = "center")
+                        tags$footer(tags$a(href="https://github.com/datngu/shiny_array", "Fork on GitHub.", target = "_blank"), align = "center"),
+                        hr()
                )
     )
 )
@@ -461,6 +463,13 @@ server <- function(input, output, session) {
 # Create Shiny App                 #
 ####################################
 shinyApp(ui = ui, server = server)
+
+
+
+
+
+
+
 
 
 
