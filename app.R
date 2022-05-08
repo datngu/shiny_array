@@ -32,11 +32,21 @@ if(!require(rmarkdown)){
 
 ## setting
 
-array_db_path = "./data/db_array.txt.gz"
-imputation_db_path = "./data/"
+# array_db_path = "/srv/shiny-server/shiny_array/data/db_array.txt.gz"
+# imputation_db_path = "/srv/shiny-server/shiny_array/data/"
+# default_snp = fread("/srv/shiny-server/shiny_array/data/default.txt", sep = ":", header = FALSE)
+# system("sudo mkdir work")
+# system("sudo rm work/*")
+
+array_db_path = "data/db_array.txt.gz"
+imputation_db_path = "data/"
+default_snp = fread("data/default.txt", sep = ":", header = FALSE)
+system("mkdir work")
+system("rm work/*")
+
 
 SNV_region_string_default = "20:50000-10000000"
-default_snp = fread("data/default.txt", sep = ":", header = FALSE)
+
 
 plot_fun <- function(df, n){
     ggplot(data = df, aes(x=array, y=percentage)) +
@@ -190,14 +200,14 @@ server <- function(input, output, session) {
             }else{
                 df = fread(input$file_in$datapath, sep = ":")
             }
-            fwrite(df, file = "SNV_list.tsv", sep = "\t", col.names = F, row.names = F)
+            fwrite(df, file = "work/SNV_list.tsv", sep = "\t", col.names = F, row.names = F)
 
-            cmd = paste0("tabix ", array_db_path, " -R SNV_list.tsv > results.txt")
+            cmd = paste0("tabix ", array_db_path, " -R work/SNV_list.tsv > work/results.txt")
             system(cmd)
             
         }
         
-        x = fread("results.txt")
+        x = fread("work/results.txt")
         
         array_info = fread("array_size.txt")
         array_names = array_info$array
@@ -223,12 +233,12 @@ server <- function(input, output, session) {
         
         df = default_snp
         
-        fwrite(df, file = "default_SNV_list.tsv", sep = "\t", col.names = F, row.names = F)
+        fwrite(df, file = "work/default_SNV_list.tsv", sep = "\t", col.names = F, row.names = F)
 
-        cmd = paste0("tabix ", array_db_path, " -R default_SNV_list.tsv > default_results.txt")
+        cmd = paste0("tabix ", array_db_path, " -R work/default_SNV_list.tsv > work/default_results.txt")
         system(cmd)
         
-        x = fread("default_results.txt")
+        x = fread("work/default_results.txt")
         
         array_info = fread("array_size.txt")
         array_names = array_info$array
@@ -326,10 +336,10 @@ server <- function(input, output, session) {
         db_path = paste0(imputation_db_path, input$dataset, ".txt.gz")
         
         #SNV_region_string = input$SNV_region_imp
-        cmd = paste0("tabix ", db_path, " ",  input$SNV_region_imp, " > imp_results.txt")
+        cmd = paste0("tabix ", db_path, " ",  input$SNV_region_imp, " > work/imp_results.txt")
         system(cmd)  
         
-        x = fread("imp_results.txt")
+        x = fread("work/imp_results.txt")
 
         colnames(x) = c("chr", "pos", "ID", "AF", "MAF", "AC", "Axiom_GW_ASI", "Axiom_GW_CHB", "Axiom_GW_EUR", "Axiom_GW_PanAFR", "Axiom_JAPONICA", "infinium-omnizhonghua-v1.4", "infinium-psycharray-v1.3", "japanese-screening-array-v1.0", "multi-ethnic-eur-eas-sas-v1.0", "multi-ethnic-global-v1.0", "oncoarray-500k", "Axiom_PMDA", "Axiom_PMRA", "Axiom_UKB_WCSG", "chinese-genotyping-array-v1.0", "cytosnp-850k-v1.2", "global-screening-array-v.3", "human-cytosnp-12-v2.1", "infinium-core-v1.2", "infinium-global-diversity-array-v1.0", "infinium-omni2.5.v1.5", "infinium-omni5-v1.2", "GenomeWideSNP_6.0")
         
@@ -358,10 +368,10 @@ server <- function(input, output, session) {
     datasetInput_default_imp <- reactive({
         
         db_path = paste0(imputation_db_path, input$dataset, ".txt.gz")     
-        cmd = paste0("tabix ", db_path, " ",  SNV_region_string_default, " > imp_default_results.txt")
+        cmd = paste0("tabix ", db_path, " ",  SNV_region_string_default, " > work/imp_default_results.txt")
         system(cmd)
 
-        x = fread("imp_default_results.txt")
+        x = fread("work/imp_default_results.txt")
 
         colnames(x) = c("chr", "pos", "ID", "AF", "MAF", "AC", "Axiom_GW_ASI", "Axiom_GW_CHB", "Axiom_GW_EUR", "Axiom_GW_PanAFR", "Axiom_JAPONICA", "infinium-omnizhonghua-v1.4", "infinium-psycharray-v1.3", "japanese-screening-array-v1.0", "multi-ethnic-eur-eas-sas-v1.0", "multi-ethnic-global-v1.0", "oncoarray-500k", "Axiom_PMDA", "Axiom_PMRA", "Axiom_UKB_WCSG", "chinese-genotyping-array-v1.0", "cytosnp-850k-v1.2", "global-screening-array-v.3", "human-cytosnp-12-v2.1", "infinium-core-v1.2", "infinium-global-diversity-array-v1.0", "infinium-omni2.5.v1.5", "infinium-omni5-v1.2", "GenomeWideSNP_6.0")
         
