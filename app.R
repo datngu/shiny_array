@@ -189,7 +189,7 @@ server <- function(input, output, session) {
             SNV_region_string = input$SNV_region
             if(substring(SNV_region_string, nchar(SNV_region_string)) == "\n") SNV_region_string = substring(SNV_region_string, 1, nchar(SNV_region_string)-1)
             #cmd = paste0("tabix array_db/db_array.txt.gz ",  SNV_region_string, " > results.txt")
-            cmd = paste0("tabix ", array_db_path, " ",  SNV_region_string, " > results.txt")
+            cmd = paste0("tabix ", array_db_path, " ",  SNV_region_string, " > work/results.txt")
             system(cmd)
             
         }else{
