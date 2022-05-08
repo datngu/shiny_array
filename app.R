@@ -32,11 +32,11 @@ if(!require(rmarkdown)){
 
 ## setting
 
-array_db_path = "./array_db/db_array.txt.gz"
-imputation_db_path = "./imputation_db/"
+array_db_path = "./data/db_array.txt.gz"
+imputation_db_path = "./data/"
 
-SNV_region_string_default = "1:500000-10000000"
-default_snp = fread("default_db/default.txt", sep = ":", header = FALSE)
+SNV_region_string_default = "20:50000-10000000"
+default_snp = fread("data/default.txt", sep = ":", header = FALSE)
 
 plot_fun <- function(df, n){
     ggplot(data = df, aes(x=array, y=percentage)) +
@@ -71,7 +71,7 @@ ui <- fluidPage(
                tabPanel("Array Contents",
                         
                         sidebarPanel(
-                            textInput(inputId = "SNV_region", label = "Paste a region:", placeholder = "1:2000-400000"),
+                            textInput(inputId = "SNV_region", label = "Paste a region:", placeholder = "20:50000-10000000"),
                             HTML("<h4>OR</h4>"),
                             
                             textAreaInput(inputId = "SNV_pasted", label = "Paste SNV IDs:", placeholder = "1:20000\n2:40000\n22:50000", height = "400px", width = "100%"),
@@ -95,7 +95,7 @@ ui <- fluidPage(
                             tags$label(h3('SNP array content statistics')),
                             tableOutput('tabledata'),
                             hr(),
-                            tags$label(h3('Download array tag SNP information')),
+                            tags$label(h3('Download array content information')),
                             tags$label(h3('\n')),
                             downloadButton("downloadData", "Download"),
                             tags$label(h3('\n')),
@@ -114,8 +114,8 @@ ui <- fluidPage(
                             selectInput("dataset", "Choose a dataset:",
                             choices = c("EAS", "AMR", "AFR", "EUR", "SAS", "VNP")),
 
-                            textInput(inputId = "SNV_region_imp", label = "Paste a region:", placeholder = "1:2000-400000"),
-                            HTML("<h4>OR</h4>"),
+                            textInput(inputId = "SNV_region_imp", label = "Paste a region:", value = "20:50000-10000000"),
+                            #HTML("<h4>OR</h4>"),
                             
                             #textAreaInput(inputId = "SNV_pasted_imp", label = "Paste SNV IDs:", placeholder = "1:20000\n2:40000\n22:50000", height = "400px", width = "100%"),
                             #HTML("<h4>OR</h4>"),
@@ -154,7 +154,11 @@ ui <- fluidPage(
                tabPanel("About", 
                         titlePanel("About"), 
                         div(includeMarkdown("about.md"), 
-                            align="justify")
+                        align="justify"),
+                        hr(),
+                        tags$footer("Written by Dat Thanh Nguyen.", align = "center"),
+                        tags$footer("Copyright (c) 2022", align = "center"),
+                        tags$footer(tags$a(href="https://github.com/datngu/shiny_array", "Fork on GitHub.", target = "_blank"), align = "center")
                )
     )
 )

@@ -1,18 +1,36 @@
-#### What is BMI?
+### What is this?
 
-**Body Mass Index (BMI)** is essentially a value obtained from the weight and height of a person [1].
+This is a web application that helps researchers find the most suitable SNP array based on their targeted population ancestry and variants of interest.
 
-#### Calculating the BMI
-BMI can be computed by dividing the person's weight (kg) by their squared height (m) as follows:
+The application includes 2 main modules, they can be used to investigate tag SNP contents and imputation performances of 23 human genotyping used in our study.
 
-> BMI = kg/m^2
+### Array Contents
 
-where *kg* represents the person's weight and *m^2* the person's squared height.
+The key function of this module is to analyze array manifests and your targeted variant lists/regions to assist you to choose the most suitable array for their studies.
+ 
+You can give the web application input by ***pasting / uploading*** a list of variants including in format ***"chr:position"***. The application will return summary statistics to show which array contains the highest number of your targeted variant lists. You can also provide input as a ***genomic region (HG38 coordinate)***, in format ***"chr:start_pos-end_pos"***, the application will return summary statistics showing which array contains the highest number of your targeted genomic region. You can also obtain the detailed information of tag SNPs for each array by clicking to "Download button" at the end of the page.
 
-#### About this BMI Calculator
 
-This *BMI Calculator* is for adults 20 years and older. Further information on calculating BMI for children and teenagers is available from the CDC [2].
+### Imputation performances
 
-#### References
-1. Centers for Disease Control. [Body Mass Index (BMI)](https://www.cdc.gov/healthyweight/assessing/bmi/index.html), Accessed January 26, 2020.
-2. Centers for Disease Control. [BMI Percentile Calculator for Child and Teen](https://www.cdc.gov/healthyweight/bmi/calculator.html), Accessed January 26, 2020.
+The key function of this module is to analyze imputation performances of 23 examined arrays in targeted genomic regions and populations that are provided by the users.
+
+You need to provide input as a ***genome region (HG38 coordinate)***, in format ***"chr:start_pos-end_pos"***, and select your ***targeted population***, the application will return a summary statistics show which array show the highest imputation accuracy (measured by mean imputation accuracy r2) of your targeted genomic region. You can also obtain detailed information of imputation performances for each array by clicking to "Download button" at the end of the page.
+
+It is not that analyses provided by this web application are restricted to variants with MAF >= 0.01.
+
+### FQA:
+Question: 
+Do the application support rsID?
+
+Answer:
+Unfortunately not! It is because the underlying implementation uses tabix indexing for a high-speed query variant set. Tabix only supports sorted coordinates, so we can't support rsID searching.
+
+Question: 
+Which genome version is supported?
+
+Answer:
+We currently support only HG38.
+
+### References
+1. TBA
