@@ -130,20 +130,6 @@ ui <- fluidPage(
 ####################################
 server <- function(input, output, session) {
   
-  # Status/Output Text Box
-  output$contents <- renderText({
-    if (input$submitbutton>0) { 
-      out_text = "Calculation completed."
-      isolate(out_text) 
-    } else {
-      out_text = "Viewing defaut setting:"
-      isolate(out_text)
-    }
-  })
-  
-  #input= list()
-
-  #input$SNV_region = "1:2000-400000"
 
   # Input Data
   datasetInput <- reactive({  
@@ -226,6 +212,31 @@ server <- function(input, output, session) {
 
   tag_snp_plot_default <- reactive({
     plot_fun(datasetInput_default()$df, datasetInput_default()$n)
+  })
+
+
+  server_status <- reactive({
+    if(nchar(input$SNV_region) > 2){
+      text = paste0("Viewing your pasted region:\n", input$SNV_region)
+    }else if(nchar(input$SNV_pasted) > 2){
+      text = paste0("Viewing your pasted variants:\n", input$SNV_pasted)
+    }else if(nrow(datasetInput()$df) >= 1){
+      text = paste0("Viewing your uploaded file:\n", input$file_in[1])
+    }else{
+      text = "There are some errors in your input! Please check again!"
+    }
+    print(text)
+  })
+
+  # Status/Output Text Box
+  output$contents <- renderText({
+    if (input$submitbutton>0) { 
+      out_text = server_status()
+      isolate(out_text) 
+    } else {
+      out_text = "Viewing default setting!"
+      isolate(out_text)
+    }
   })
 
 
