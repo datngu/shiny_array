@@ -32,17 +32,18 @@ if(!require(rmarkdown)){
 
 ## setting
 
-# array_db_path = "/srv/shiny-server/shiny_array/data/db_array.txt.gz"
-# imputation_db_path = "/srv/shiny-server/shiny_array/data/"
-# default_snp = fread("/srv/shiny-server/shiny_array/data/default.txt", sep = ":", header = FALSE)
-# system("sudo mkdir work")
-# system("sudo rm work/*")
+array_db_path = "/srv/shiny-server/shiny_array/data/db_array.txt.gz"
+imputation_db_path = "/srv/shiny-server/shiny_array/data/"
+default_snp = fread("/srv/shiny-server/shiny_array/data/default.txt", sep = ":", header = FALSE)
+# sudo mkdir /srv/shiny-server/shiny_array/work
+# sudo rm /srv/shiny-server/shiny_array/work/*
+# sudo chown shiny:shiny /srv/shiny-server/shiny_array/work
 
-array_db_path = "data/db_array.txt.gz"
-imputation_db_path = "data/"
-default_snp = fread("data/default.txt", sep = ":", header = FALSE)
-system("mkdir work")
-system("rm work/*")
+# array_db_path = "data/db_array.txt.gz"
+# imputation_db_path = "data/"
+# default_snp = fread("data/default.txt", sep = ":", header = FALSE)
+# system("mkdir work")
+# system("rm work/*")
 
 
 SNV_region_string_default = "20:50000-10000000"
