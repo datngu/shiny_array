@@ -36,7 +36,7 @@ sudo chown shiny:shiny /srv/shiny-server/shiny_array/work
 
 docker build -t shiny-array:v0.0.0 -f Dockerfile .
 
-docker run -it --rm -h shiny -p 3838:3838 --name shiny_array shiny-array:v0.0.0
+docker run -it --rm -h shiny -p 3838:3838 -v /Users/datn/Downloads/chr20:/imputation_data --name shiny_array shiny-array:v0.0.0
 
 
 http://localhost:3838/shiny_array/

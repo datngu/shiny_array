@@ -33,7 +33,7 @@ if(!require(rmarkdown)){
 ## setting
 
 array_db_path = "/srv/shiny-server/shiny_array/data/db_array.txt.gz"
-imputation_db_path = "/srv/shiny-server/shiny_array/data/"
+imputation_db_path = "/imputation_data/"
 default_snp = fread("/srv/shiny-server/shiny_array/data/default.txt", sep = ":", header = FALSE)
 # sudo mkdir /srv/shiny-server/shiny_array/work
 # sudo rm /srv/shiny-server/shiny_array/work/*
