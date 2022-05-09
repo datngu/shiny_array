@@ -99,7 +99,7 @@ docker build -t shiny-array:v0.0.0 -f Dockerfile .
 docker run -it --rm -h shiny -p 3838:3838 --name shiny_array shiny-array:v0.0.0
 
 
-
+http://localhost:3838/shiny_array/
 
 
 

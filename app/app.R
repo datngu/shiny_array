@@ -64,7 +64,7 @@ plot_fun_imp <- function(df, n){
   ggplot(data = df, aes(x = array_name, y = mean_imputation_accuracy)) +
     geom_bar(stat="identity", fill="steelblue")+
     theme_light() + guides(x = guide_axis(angle = 90)) + 
-    scale_y_continuous(breaks=seq(0,1,0.05), limits = c(0,1) ) + 
+    scale_y_continuous(breaks=seq(0,1,0.1), limits = c(0,1) ) + 
     ylab("Mean imputation r2 of query SNPs") +  xlab("") + 
     ggtitle(paste0("Total SNP query: ", n))
 }
