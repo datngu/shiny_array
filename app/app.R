@@ -77,7 +77,7 @@ ui <- fluidPage(
     
     theme = shinytheme("cerulean"),
     
-    navbarPage("Array evaluator",
+    navbarPage("SNP Array Comparison",
                
                
                tabPanel("Array Contents",
@@ -341,9 +341,9 @@ server <- function(input, output, session) {
     })
     
     output$downloadData <- downloadHandler(
-        filename = "array_tagSNP_infomation.txt",
+        filename = "array_tagSNP_infomation.csv",
         content = function(file) {
-            write.table(Array_tag_snp(), file, sep = "\t", quote = FALSE ,row.names = FALSE)
+            write.csv(Array_tag_snp(), file, quote = FALSE ,row.names = FALSE)
         }
     )
 
@@ -482,9 +482,9 @@ server <- function(input, output, session) {
     
     
     output$downloadData_imp <- downloadHandler(
-        filename = "array_imputation_performance.txt",
+        filename = "array_imputation_performance.csv",
         content = function(file) {
-            write.table(Array_imp_snp(), file, sep = "\t", quote = FALSE ,row.names = FALSE)
+            write.csv(Array_imp_snp(), file, quote = FALSE ,row.names = FALSE)
         }
     )
     
