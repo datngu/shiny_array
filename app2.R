@@ -43,7 +43,7 @@ array_db_path = "data/db_array.txt.gz"
 imputation_db_path = "data/"
 default_snp = fread("data/default.txt", sep = ":", header = FALSE)
 system("mkdir work")
-system("rm work/*")
+#system("rm work/*")
 
 
 
@@ -51,7 +51,7 @@ SNV_region_string_default = "20:500000-800000"
 
 
 plot_fun <- function(df, n){
-    ggplot(data = df, aes(x=array, y=percentage)) +
+    ggplot(data = df, aes(x = array_name, y = percentage)) +
         geom_bar(stat="identity", fill="steelblue")+
         geom_text(aes(label= count), vjust=-0.3, size=3.5)+
         theme_light() + guides(x = guide_axis(angle = 90)) + 
@@ -61,7 +61,7 @@ plot_fun <- function(df, n){
 }
 
 plot_fun_imp <- function(df, n){
-  ggplot(data = df, aes(x = array, y = mean_imputation_accuracy)) +
+  ggplot(data = df, aes(x = array_name, y = mean_imputation_accuracy)) +
     geom_bar(stat="identity", fill="steelblue")+
     theme_light() + guides(x = guide_axis(angle = 90)) + 
     scale_y_continuous(breaks=seq(0,1,0.05), limits = c(0,1) ) + 
@@ -224,8 +224,16 @@ server <- function(input, output, session) {
         df$count = as.integer(df$count)
         od = order(df$count, decreasing = T)
         df = df[od,]
+
+        df2 = df
+        df2$size = array_info$all_site[match(df2$array, array_info$array)]
+        df2$size = round(df2$size/1000,0)
+        od = order(df2$size, decreasing = F)
+        df2 = df2[od,]
+        df2$array_name = paste0(df2$array, "_", df2$size, "k")
+        df2$array_name = factor(df2$array_name, levels = df2$array_name)
         #fwrite(df, file = "result_statistics.tsv", sep = "\t", row.names = F)
-        res = list(df = df, n = n, array_tag_snp = x)
+        res = list(df = df, df2 = df2, n = n, array_tag_snp = x)
         print(res)
     })
     
@@ -255,18 +263,26 @@ server <- function(input, output, session) {
         df$count = as.integer(df$count)
         od = order(df$count, decreasing = T)
         df = df[od,]
+
+        df2 = df
+        df2$size = array_info$all_site[match(df2$array, array_info$array)]
+        df2$size = round(df2$size/1000,0)
+        od = order(df2$size, decreasing = F)
+        df2 = df2[od,]
+        df2$array_name = paste0(df2$array, "_", df2$size, "k")
+        df2$array_name = factor(df2$array_name, levels = df2$array_name)
         #fwrite(df, file = "result_statistics.tsv", sep = "\t", row.names = F)
-        res = list(df = df, n = n, array_tag_snp = x)
+        res = list(df = df, df2 = df2, n = n, array_tag_snp = x)
         print(res)
     })
     
     tag_snp_plot <- reactive({
-        plot_fun(datasetInput()$df, datasetInput()$n)
+        plot_fun(datasetInput()$df2, datasetInput()$n)
     })
     
     
     tag_snp_plot_default <- reactive({
-        plot_fun(datasetInput_default()$df, datasetInput_default()$n)
+        plot_fun(datasetInput_default()$df2, datasetInput_default()$n)
     })
     
     
@@ -361,7 +377,15 @@ server <- function(input, output, session) {
         od = order(df$mean_imputation_accuracy, decreasing = T)
         df = df[od,]
         #fwrite(df, file = "result_statistics.tsv", sep = "\t", row.names = F)
-        res = list(df = df, n = n, array_imp_snp = x)
+        array_info = fread("array_size.txt")
+        df2 = df
+        df2$size = array_info$all_site[match(df2$array, array_info$array)]
+        df2$size = round(df2$size/1000,0)
+        od = order(df2$size, decreasing = F)
+        df2 = df2[od,]
+        df2$array_name = paste0(df2$array, "_", df2$size, "k")
+        df2$array_name = factor(df2$array_name, levels = df2$array_name)
+        res = list(df = df, df2 = df2, n = n, array_imp_snp = x)
         print(res)
     })
     
@@ -393,17 +417,25 @@ server <- function(input, output, session) {
         od = order(df$mean_imputation_accuracy, decreasing = T)
         df = df[od,]
         #fwrite(df, file = "result_statistics.tsv", sep = "\t", row.names = F)
-        res = list(df = df, n = n, array_imp_snp = x)
+        array_info = fread("array_size.txt")
+        df2 = df
+        df2$size = array_info$all_site[match(df2$array, array_info$array)]
+        df2$size = round(df2$size/1000,0)
+        od = order(df2$size, decreasing = F)
+        df2 = df2[od,]
+        df2$array_name = paste0(df2$array, "_", df2$size, "k")
+        df2$array_name = factor(df2$array_name, levels = df2$array_name)
+        res = list(df = df, df2 = df2, n = n, array_imp_snp = x)
         print(res)
     })
     
     tag_snp_plot_imp <- reactive({
-        plot_fun_imp(datasetInput_imp()$df, datasetInput_imp()$n)
+        plot_fun_imp(datasetInput_imp()$df2, datasetInput_imp()$n)
     })
     
     
     tag_snp_plot_default_imp <- reactive({
-        plot_fun_imp(datasetInput_default_imp()$df, datasetInput_default_imp()$n)
+        plot_fun_imp(datasetInput_default_imp()$df2, datasetInput_default_imp()$n)
     })
     
     
