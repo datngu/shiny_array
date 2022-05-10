@@ -15,6 +15,7 @@ RUN R -e "install.packages('rmarkdown',dependencies=TRUE, repos='http://cran.rst
 RUN R -e "install.packages('shinythemes',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('ggplot2',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('data.table',dependencies=TRUE, repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('bit64',dependencies=TRUE, repos='http://cran.rstudio.com/')"
 
 ADD ./app/ /srv/shiny-server/shiny_array
 #RUN mv shiny_array /srv/shiny-server
