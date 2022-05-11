@@ -150,7 +150,7 @@ ui <- fluidPage(
                             tags$label(h3('SNP array imputation accuracy statistics')),
                             tableOutput('tabledata_imp'),
                             hr(),
-                            HTML("<h3>Download array impuation performance information</h3>"),
+                            HTML("<h3>Download array imputation performance information</h3>"),
                             downloadButton("downloadData_imp", "Download"),
                             tags$label(h3('\n')),
                             hr(),

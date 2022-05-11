@@ -26,12 +26,6 @@ if(!require(rmarkdown)){
 }
 
 
-if(!require(bit64)){
-    install.packages("bit64")
-    library(bit64)
-}
-
-
 ####################################
 # Loading data default             #
 ####################################
@@ -39,17 +33,17 @@ if(!require(bit64)){
 ## setting
 
 # array_db_path = "/srv/shiny-server/shiny_array/data/db_array.txt.gz"
-# imputation_db_path = "/srv/shiny-server/shiny_array/data/"
+# imputation_db_path = "/imputation_data/"
 # default_snp = fread("/srv/shiny-server/shiny_array/data/default.txt", sep = ":", header = FALSE)
-# sudo mkdir /srv/shiny-server/shiny_array/work
-# sudo rm /srv/shiny-server/shiny_array/work/*
-# sudo chown shiny:shiny /srv/shiny-server/shiny_array/work
+# # sudo mkdir /srv/shiny-server/shiny_array/work
+# # sudo rm /srv/shiny-server/shiny_array/work/*
+# # sudo chown shiny:shiny /srv/shiny-server/shiny_array/work
 
 array_db_path = "data/db_array.txt.gz"
 imputation_db_path = "data/"
 default_snp = fread("data/default.txt", sep = ":", header = FALSE)
 system("mkdir work")
-#system("rm work/*")
+
 
 
 
@@ -156,7 +150,7 @@ ui <- fluidPage(
                             tags$label(h3('SNP array imputation accuracy statistics')),
                             tableOutput('tabledata_imp'),
                             hr(),
-                            HTML("<h3>Download array impuation performance information</h3>"),
+                            HTML("<h3>Download array imputation performance information</h3>"),
                             downloadButton("downloadData_imp", "Download"),
                             tags$label(h3('\n')),
                             hr(),
@@ -360,23 +354,8 @@ server <- function(input, output, session) {
 
         db_path = paste0(imputation_db_path, input$dataset, ".txt.gz")
         
-        region = input$SNV_region_imp
-        chr = unlist(strsplit(region, ":"))[1]
-        range = unlist(strsplit(region, ":"))[2]
-        s = as.integer64(unlist(strsplit(range, "-"))[1])
-        e = as.integer64(unlist(strsplit(range, "-"))[2])       
-
-        if( (e - s) < 1){
-          e = s + 100000
-        }
-        if( (e - s) > 10000000){
-          e = s + 10000000
-        }
-
-        region = paste0(chr, ":", s, "-", e)
-        out_text = paste0("Viewing your selected region:\n", input$SNV_region_imp, "\nNote: genomic region could not excess 10MB!")
-
-        cmd = paste0("tabix ", db_path, " ",  region, " > work/imp_results.txt")
+        #SNV_region_string = input$SNV_region_imp
+        cmd = paste0("tabix ", db_path, " ",  input$SNV_region_imp, " > work/imp_results.txt")
         system(cmd)  
         
         x = fread("work/imp_results.txt")
@@ -406,7 +385,7 @@ server <- function(input, output, session) {
         df2 = df2[od,]
         df2$array_name = paste0(df2$array, "_", df2$size, "k")
         df2$array_name = factor(df2$array_name, levels = df2$array_name)
-        res = list(df = df, df2 = df2, n = n, array_imp_snp = x, out_text = out_text)
+        res = list(df = df, df2 = df2, n = n, array_imp_snp = x)
         print(res)
     })
     
@@ -464,7 +443,8 @@ server <- function(input, output, session) {
     # Status/Output Text Box
     output$contents_imp <- renderText({
         if (input$submitbutton_imp > 0) { 
-            isolate(datasetInput_imp()out_text) 
+            out_text = paste0("Viewing your selected region:\n", input$SNV_region_imp)
+            isolate(out_text) 
         } else {
             out_text = paste0("Viewing default setting region:\n", SNV_region_string_default)
             isolate(out_text)
@@ -515,6 +495,10 @@ server <- function(input, output, session) {
 # Create Shiny App                 #
 ####################################
 shinyApp(ui = ui, server = server)
+
+
+
+
 
 
 
