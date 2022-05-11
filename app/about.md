@@ -17,7 +17,7 @@ The key function of this module is to analyze imputation performances of 23 exam
 
 You need to provide input as a ***genome region (HG38 coordinate)***, in format ***"chr:start_pos-end_pos"***, and select your ***targeted population***, the application will return a summary statistics show which array show the highest imputation accuracy (measured by mean imputation accuracy r2) of your targeted genomic region. You can also obtain detailed information of imputation performances for each array by clicking to "Download button" at the end of the page.
 
-It is not that analyses provided by this web application are restricted to variants with MAF >= 0.01.
+It is noted that analyses provided by this web application are restricted to variants with MAF >= 0.01.
 
 ### FQA:
 Question: 
