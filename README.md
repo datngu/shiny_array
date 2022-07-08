@@ -1,3 +1,6 @@
+[![Docker Image CI](https://github.com/datngu/shiny_array/actions/workflows/docker-image.yml/badge.svg)](https://github.com/datngu/shiny_array/actions/workflows/docker-image.yml)
+
+
 ### What is this?
 
 This is a web application that helps researchers find the most suitable SNP array based on their targeted population ancestry and variants of interest.
